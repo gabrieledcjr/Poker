@@ -11,35 +11,91 @@
 
 int main (void) 
 {
+	/* initialize suit array */
+	const char *suit[N_SUITS] = {"Hearts", "Diamonds", "Clubs", "Spades"};
 
+	/* initialize face array */
+	const char *face[N_FACES] = {"Ace", "Deuce", "Three", "Four", "Five", 
+		                                "Six", "Seven", "Eight", "Nine", "Ten", 
+							            "Jack", "Queen", "King"};
+
+	int deckOfCard[N_SUITS][N_FACES] = {0};
+
+	int suitCounter[N_PLAYERS][N_SUITS] = {0};
+	int faceCounter[N_PLAYERS][N_FACES] = {0};
+
+	/* Player 0 is Dealer and 1 is Player 1 */
+	Card playersHand[N_PLAYERS][N_CARDS_ON_HAND];
+
+	int sampleFace[13] = {0};
+	int sampleSuit[4] = {0};
+
+	sampleFace[0] = 1;
+	sampleFace[1] = 0;
+	sampleFace[8] = 0;
+	sampleFace[9] = 2;
+	sampleFace[10] = 0;
+	sampleFace[11] = 0;
+	sampleFace[12] = 1;
+	
+	sampleSuit[3] = 2;
+	sampleSuit[1] = 3;
+
+	printf ("Test>> One Pair: %s\n", isOnePair (sampleFace) ? "YES": "NO");
+	printf ("Test>> Two Pairs: %s\n", isTwoPair (sampleFace) ? "YES": "NO");
+	printf ("Test>> Three of a Kind: %s\n", isThreeOfAKind (sampleFace) ? "YES": "NO");
+	printf ("Test>> Four of a Kind: %s\n", isFourOfAKind (sampleFace) ? "YES": "NO");
+	printf ("Test>> Flush: %s\n", isFlush (sampleSuit) ? "YES": "NO");
+	printf ("Test>> Straight: %s\n", isStraight (sampleFace) ? "YES": "NO");
+
+	/* seed random-number generator */
 	Randomize ();
-/* | (1) In order to complete the game of 5-card-draw poker, you should complete the following functions:
 
-    (a) (5 pts) Modify the card dealing function provided in the example code so that a five-card poker hand is dealt.
+	/* Shuffles the deck of cards */
+	shuffle (deckOfCard);
 
-    (b) (5 pts) Write a function to determine if the hand contains a pair.
+	/* Deals card to dealer and player(s) */
+	deal (deckOfCard, face, suit, playersHand);
 
-    (c) (5 pts) Write a function to determine if the hand contains two pairs.
+	countSuitsAndFaces (suitCounter, faceCounter, playersHand);
 
-    (d) (5 pts) Write a function to determine if the hand contains three of a kind (e.g. three jacks).
 
-    (e) (5 pts) Write a function to determine if the hand contains four of a kind (e.g. four aces).
+	printf ("Player 1>> One Pair: %s\n", isOnePair (faceCounter[0]) ? "YES": "NO");
+	printf ("Player 1>> Two Pairs: %s\n", isTwoPair (faceCounter[0]) ? "YES": "NO");
+	printf ("Player 1>> Three of a Kind: %s\n", isThreeOfAKind (faceCounter[0]) ? "YES": "NO");
+	printf ("Player 1>> Four of a Kind: %s\n", isFourOfAKind (faceCounter[0]) ? "YES": "NO");
+	printf ("Player 1>> Flush: %s\n", isFlush (suitCounter[0]) ? "YES": "NO");
 
-    (f) (5 pts) Write a function to determine if the hand contains a flush (i.e. all five cards of the same suit).
+	printf ("Player 2>> One Pair: %s\n", isOnePair (faceCounter[1]) ? "YES": "NO");
+	printf ("Player 2>> Two Pairs: %s\n", isTwoPair (faceCounter[1]) ? "YES": "NO");
+	printf ("Player 2>> Three of a Kind: %s\n", isThreeOfAKind (faceCounter[1]) ? "YES": "NO");
+	printf ("Player 2>> Four of a Kind: %s\n", isFourOfAKind (faceCounter[1]) ? "YES": "NO");
+	printf ("Player 2>> Flush: %s\n", isFlush (suitCounter[1]) ? "YES": "NO");
+/**
 
-    (g) (5 pts) Write a function to determine if the hand contains a straight (i.e. five cards of consecutive face values).
 
  
 
-(2) (20 pts) Use the functions developed in (1) to deal two five-card poker hands, evaluate each hand, and determine which is the better hand.
+(2) (20 pts) Use the functions developed in (1) to deal two five-card poker 
+    hands, evaluate each hand, and determine which is the better hand.
 
  
 
-(3) (25 pts) Simulate the dealer. The dealer's five-card hand is dealt "face down" so the player cannot see it. The program should then evaluate the dealer's hand, and based on the quality of the hand, the dealer should draw one, two, or three more cards to replace the corresponding number of unneeded cards in the original hand. The program should then re-evaluate the dealer's hand.
+(3) (25 pts) Simulate the dealer. The dealer's five-card hand is dealt 
+    "face down" so the player cannot see it. The program should then 
+	evaluate the dealer's hand, and based on the quality of the hand, the 
+	dealer should draw one, two, or three more cards to replace the 
+	corresponding number of unneeded cards in the original hand. The 
+	program should then re-evaluate the dealer's hand.
 
  
 
-(4) (20 pts) Make the program handle the dealer's five-card hand automatically. The player should be allowed to decide which cards of the player's hand to replace. The program should then evaluate both hands and determine who wins. Now use the program to play 10 games against the computer. You should be able to test and modify or refine your Poker game based on these results!
+(4) (20 pts) Make the program handle the dealer's five-card hand 
+    automatically. The player should be allowed to decide which cards of 
+	the player's hand to replace. The program should then evaluate both hands 
+	and determine who wins. Now use the program to play 10 games against the 
+	computer. You should be able to test and modify or refine your Poker game 
+	based on these results!
 */
 	return 0;
 }

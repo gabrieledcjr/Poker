@@ -96,21 +96,3 @@ void DrawBorder (short upperLeftCornerX, short upperLeftCornerY,
 		printf ("%c", 186);
 	}
 }
-
-short GetCursorX (void) {
-    HANDLE stdOutput;
-    COORD pos;
-
-    stdOutput = GetStdHandle (STD_OUTPUT_HANDLE);
-
-    return pos.X;
-}
-
-short GetCursorY (void) {
-    HANDLE stdOutput;
-    COORD pos;
-
-    stdOutput = GetStdHandle (STD_OUTPUT_HANDLE);
-
-    return pos.Y;
-}

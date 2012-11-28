@@ -10,7 +10,4 @@ void   MoveCursor  (short x, short y);
 void   DrawBorder  (short upperLeftCornerX, short upperLeftCornerY,
 				    short lowerRightCornerX, short lowerRightCornerY);
 
-short  GetCursorX  (void);
-short  GetCursorY  (void);
-
 #endif
