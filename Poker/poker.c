@@ -1,7 +1,23 @@
 #include "poker.h"
 
-/* shuffle cards in deck */
+/* initializing variables */
+void init (int deckOfCard[][N_FACES], int suit[][N_SUITS], int face[][N_FACES]) {
+	int i = 0, j = 0;
 
+	for (i = 0; i < N_SUITS; i++)
+		for (j = 0; j < N_FACES; j++)
+			deckOfCard[i][j] = 0;
+
+	for (i = 0; i < N_PLAYERS; i++) {
+		for (j = 0; j < N_SUITS; j++)
+			suit[i][j] = 0;
+		for (j = 0; j < N_FACES; j++)
+			face[i][j] = 0;
+	}
+
+}
+
+/* shuffle cards in deck */
 void shuffle (int wDeck[][N_FACES]) {
 	short row    = 0;   /* row number */
 	short column = 0;   /* column number */
@@ -40,8 +56,7 @@ void deal (const int wDeck[][N_FACES], const char *wFace[],
 
 				/* if slot contains current card, display card */
 				if (wDeck[row][column] == card) {
-					//printf ("Player %d: %5s of %-8s\n", player+1, wFace[column], wSuit[row]);
-					printf ("%5s of %-8s%c", wFace[column], wSuit[row], player == N_PLAYERS - 1 ? '\n' : '\t');
+					//printf ("%5s of %-8s%c", wFace[column], wSuit[row], player == N_PLAYERS - 1 ? '\n' : '\t');
 					hand[player][i].suitIndex = row;
 					hand[player][i].faceIndex = column;
 					hand[player][i].cardNumber = card;
@@ -59,15 +74,308 @@ void deal (const int wDeck[][N_FACES], const char *wFace[],
 	}
 }
 
+void sortHand (Card hand[]) {
+	int i = 0, j = 0;
+	Card temp;
+
+	for (i = 0; i < N_CARDS_ON_HAND; i++) {
+		for (j = i + 1; j < N_CARDS_ON_HAND; j++) {
+			if (hand[j].faceIndex > hand[i].faceIndex) {
+				temp = hand[j];
+				hand[j] = hand[i];
+				hand[i] = temp;
+			}
+		}
+	}
+}
+
 void countSuitsAndFaces (int wSuit[][N_SUITS], int wFace[][N_FACES], 
 	                     Card hand[][N_CARDS_ON_HAND]) {
 	int i = 0, j = 0;
 
+	/* loops through number of players including dealer */
 	for (i = 0; i < N_PLAYERS; i++) 
+		/* loops through number of cards per hand */
 		for (j = 0; j < N_CARDS_ON_HAND; j++) {
+			/* count number of similar suits */
 			wSuit[i][hand[i][j].suitIndex]++;
+			/* count number of similar faces */
 			wFace[i][hand[i][j].faceIndex]++;
 		}
+}
+
+void drawPlayerCard (short x, short y, short suit, short face) {
+	DrawBorder (x, y, x + 11, y + 11);
+
+	drawFaceCharacter (face);
+	MoveCursor (face == TEN ? x + 9 : x + 10, y + 10);
+	drawFaceCharacter (face);
+
+	drawSuitSymbol (x + 1, y + 3, suit);
+}
+
+
+void drawFaceCharacter (short type) {
+	switch (type) {
+		case ACE:   printf("A");  break;
+		case DEUCE: printf("2");  break;
+		case THREE: printf("3");  break;
+		case FOUR:  printf("4");  break;
+		case FIVE:  printf("5");  break;
+		case SIX:   printf("6");  break;
+		case SEVEN: printf("7");  break;
+		case EIGHT: printf("8");  break;
+		case NINE:  printf("9");  break;
+		case TEN:   printf("10"); break;
+		case JACK:  printf("J");  break;
+		case QUEEN: printf("Q");  break;
+		case KING:  printf("K");  break;
+	}
+}
+
+void drawSuitCharacter (short type) {
+	switch (type) {
+		case HEARTS:   printf("H");  break;
+		case DIAMONDS: printf("D");  break;
+		case CLUBS:    printf("C");  break;
+		case SPADES:   printf("S");  break;
+	}
+}
+
+void drawSuitSymbol (short x, short y, short type) {
+	switch (type) {
+		case HEARTS:
+			MoveCursor (x, y);
+			printf (" **   ** ");
+			MoveCursor (x, y + 1);
+			printf ("**** ****");
+			MoveCursor (x, y + 2);
+			printf ("*********");
+			MoveCursor (x, y + 3);
+			printf ("*********");
+			MoveCursor (x, y + 4);
+			printf (" ******* ");
+			MoveCursor (x, y + 5);
+			printf ("  *****  ");
+			MoveCursor (x, y + 6);
+			printf ("    *    ");
+			break;
+		case DIAMONDS:
+			MoveCursor (x, y);
+			printf ("    *    ");
+			MoveCursor (x, y + 1);
+			printf ("   ***   ");
+			MoveCursor (x, y + 2);
+			printf ("  *****  ");
+			MoveCursor (x, y + 3);
+			printf (" ******* ");
+			MoveCursor (x, y + 4);
+			printf ("  *****  ");
+			MoveCursor (x, y + 5);
+			printf ("   ***   ");
+			MoveCursor (x, y + 6);
+			printf ("    *    ");
+			break;
+		case CLUBS:
+			MoveCursor (x, y);
+			printf ("   ***   ");
+			MoveCursor (x, y + 1);
+			printf ("  *****  ");
+			MoveCursor (x, y + 2);
+			printf ("    *    ");
+			MoveCursor (x, y + 3);
+			printf (" ******* ");
+			MoveCursor (x, y + 4);
+			printf ("*********");
+			MoveCursor (x, y + 5);
+			printf (" ** * ** ");
+			MoveCursor (x, y + 6);
+			printf ("    *    ");
+			break;
+		case SPADES:
+			MoveCursor (x, y);
+			printf ("    *    ");
+			MoveCursor (x, y + 1);
+			printf ("   ***   ");
+			MoveCursor (x, y + 2);
+			printf (" ******* ");
+			MoveCursor (x, y + 3);
+			printf ("*********");
+			MoveCursor (x, y + 4);
+			printf ("**  *  **");
+			MoveCursor (x, y + 5);
+			printf ("    *    "); 
+			MoveCursor (x, y + 6);
+			printf ("   ***   ");
+			break;
+	}
+}
+
+void drawPlayerHand (Card playersHand []) {
+	short i = 0;
+	short x = 1;
+
+	MoveCursor (1, 1);
+	printf ("PLAYER'S HAND");
+
+	for (i = 0; i < N_CARDS_ON_HAND; i++) {
+		drawPlayerCard (x, 2, playersHand[i].suitIndex, playersHand[i].faceIndex);
+		x += 12;
+	}
+}
+
+void drawDealerCard (short x, short y, short suit, short face, Boolean showCard) {
+	DrawBorderFill (x, y, x + 5, y + 6, showCard ? ' ' : '+');
+	
+	if (showCard) {
+		drawFaceCharacter (face);
+		printf ("-");
+		drawSuitCharacter (suit);
+	}
+}
+
+void drawDealerHand (Card playersHand [], Boolean showCard) {
+	short i = 0;
+	short x = 2;
+
+	/* draws lower border for dealer */
+	DrawBorder (1, 14, 32, 23);
+	printf ("DEALER'S HAND");
+
+	for (i = 0; i < N_CARDS_ON_HAND; i++) {
+		drawDealerCard (x, 16, playersHand[i].suitIndex, playersHand[i].faceIndex, showCard);
+		x += 6;
+	}
+}
+
+void drawOutputBox (const char *message) {
+	DrawBorder (33, 14, 78, 23);
+	printf ("%s", message);
+}
+
+void drawMenu (void) {
+	DrawBorder (61, 1, 78, 13);
+	printf ("      MENU");
+	MoveCursor (62, 4);
+	printf ("[ ] PLAY");
+	MoveCursor (62, 5);
+	printf ("[ ] SWAP CARDS");
+	MoveCursor (62, 6);
+	printf ("[ ] STATS");
+	MoveCursor (62, 7);
+	printf ("[ ] QUIT GAME");
+}
+
+short selectMenuItem (void) {
+	short cursorX = MENU_X,
+          cursorY = MENU_Y,
+          menuItem = PLAY_GAME;
+	char ch = '\0';
+
+	MoveCursor (cursorX, cursorY);
+	printf ("%c", CURSOR_SYMBOL);
+	MoveCursor (cursorX, cursorY);
+
+	do {
+		ch = getch ();
+		switch(ch) 
+		{ 
+			case ARROW_KEY_UP: 
+				/* UP arrow key is pressed */
+				if (cursorY == MENU_Y) 
+				{
+					MoveCursor (cursorX, cursorY);
+					printf (" ");
+					cursorY = MENU_Y + 3;
+					MoveCursor (cursorX, cursorY);
+					printf ("%c", CURSOR_SYMBOL);
+					MoveCursor (cursorX, cursorY);
+
+					menuItem = QUIT_GAME;
+				}	
+				else if (cursorY > MENU_Y) 
+				{
+					MoveCursor (cursorX, cursorY);
+					printf (" ");
+					cursorY--;
+					MoveCursor (cursorX, cursorY);
+					printf ("%c", CURSOR_SYMBOL);
+					MoveCursor (cursorX, cursorY);
+
+					menuItem--;
+				} 		
+				break;
+
+			case ARROW_KEY_DOWN: 
+				/* DOWN arrow key is pressed */
+				if (cursorY < MENU_Y + 3)
+				{
+					MoveCursor (cursorX, cursorY);
+					printf (" ");
+					cursorY++;
+					MoveCursor (cursorX, cursorY);
+					printf ("%c", CURSOR_SYMBOL);
+					MoveCursor (cursorX, cursorY);
+
+					menuItem++;
+				} 
+				else if (cursorY == MENU_Y + 3) 
+				{
+					MoveCursor (cursorX, cursorY);
+					printf (" ");
+					cursorY = MENU_Y;
+					MoveCursor (cursorX, cursorY);
+					printf ("%c", CURSOR_SYMBOL);
+					MoveCursor (cursorX, cursorY);
+
+					menuItem = PLAY_GAME;
+				}
+				break; 
+		}
+	} while (ch != 13);
+
+	return menuItem;
+}
+
+short checkHandCategory (const int wFace[], const int wSuit[]) {
+	short category = 0;
+
+	if (isRoyalFlush (wFace, wSuit))         
+		category = ROYAL_FLUSH;
+	else if (isStraightFlush (wFace, wSuit)) 
+		category = STRAIGHT_FLUSH;
+	else if (isFourOfAKind (wFace))
+		category = FOUR_OF_A_KIND;
+	else if (isFullHouse (wFace))
+		category = FULL_HOUSE;
+	else if (isFlush (wSuit))
+		category = FLUSH;
+	else if (isStraight (wFace))
+		category = STRAIGHT;
+	else if (isThreeOfAKind (wFace))
+		category = THREE_OF_A_KIND;
+	else if (isTwoPair (wFace))
+		category = TWO_PAIR;
+	else if (isOnePair (wFace))
+		category = ONE_PAIR;
+	else
+		category = HIGH_CARD;
+
+	return category;
+}
+
+short checkWin (const int wFace[][N_FACES], const int wSuit[][N_SUITS]) {
+	int player = -1;
+	short category[2] = {0};
+
+	for (player = 0; player < N_PLAYERS; player++) {
+		category [player] = checkHandCategory (wFace[player], wSuit[player]);
+	}
+
+	if (category[0] < category [1]) player = 0;
+	else player = 1;
+
+	return player;
 }
 
 /**
@@ -148,6 +456,52 @@ Boolean isThreeOfAKind (const int wFace[]) {
 		/* 3 or greater means there is a three of a kind */
 		if (wFace[i] >= 3) {
 			result = True;
+			break;
+		}
+
+		/* counts total card located */
+		count += wFace[i++];
+	}
+
+	return result;
+}
+
+Boolean isFullHouse (const int wFace[]) {
+	int i = 0, count = 0;
+	Boolean result = False;
+	
+	/* loops through all 13 card numbers */
+	/* if 1 card is different or 4 have the same face value, 
+	   then automaticaly it's not a full house*/
+	while (i < N_FACES && count != 1 && count != 4) {
+		/* 3 means there is a three of a kind */
+		if (wFace[i] == 3) {
+			i++;
+			/* loops again to find a pair */
+			/* count gets a value other than zero, means not a fullhouse */
+			while (i < N_FACES && count == 0) {
+				/* found a pair */
+				if (wFace[i] == 2) {
+					result = True;
+					break;
+				}
+				count += wFace[i++];
+			}
+			break;
+		}
+		/* 2 means there is a pair */
+		if (wFace[i] == 2) {
+			i++;
+			/* loops again to find a three of a kind */
+			/* count gets a value other than zero, means not a fullhouse */
+			while (i < N_FACES && count == 0) {
+				/* found a three of a kind */
+				if (wFace[i] == 3) {
+					result = True;
+					break;
+				}
+				count += wFace[i++];
+			}
 			break;
 		}
 
@@ -246,6 +600,24 @@ Boolean isStraight (const int wFace[]) {
 		}
 		i++;
 	}
+
+	return result;
+}
+
+Boolean isStraightFlush (const int wFace[], const int wSuit[]) {
+	Boolean result = False;
+
+	if (isStraight (wFace) && isFlush (wSuit)) 
+		result = True;
+
+	return result;
+}
+
+Boolean isRoyalFlush (const int wFace[], const int wSuit[]) {
+	Boolean result = False;
+
+	if (isStraight (wFace) && isFlush (wSuit) && wFace[0] == 1) 
+		result = True;
 
 	return result;
 }

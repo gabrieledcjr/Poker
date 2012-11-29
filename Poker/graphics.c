@@ -95,4 +95,74 @@ void DrawBorder (short upperLeftCornerX, short upperLeftCornerY,
 		MoveCursor (lowerRightCornerX, y);
 		printf ("%c", 186);
 	}
+
+	/* clears whats inside the border */
+	for (y = upperLeftCornerY + 1; y < lowerRightCornerY; y++)
+		for (x = upperLeftCornerX + 1; x < lowerRightCornerX; x++) {
+			MoveCursor (x, y);
+			printf (" ");
+		}
+
+	/* moves cursor to the upper left corner of the border */
+	MoveCursor (upperLeftCornerX + 1, upperLeftCornerY + 1);
+}
+
+/**
+ * Function name : DrawBorderFill ()
+ * Date Created  : 28 November 2012
+ * Usage         : DrawBorderFill (upperX, upperY, lowerX, lowerY, fill);
+ * Definition    : This function draws a border on the screen and user
+ *                 specifies type of fill
+ * Pre-condition : n/a
+ * Post-condition: n/a
+ */
+void DrawBorderFill (short upperLeftCornerX, short upperLeftCornerY,
+				     short lowerRightCornerX, short lowerRightCornerY, 
+					 char fill) {
+	int x = upperLeftCornerX;
+	int y = upperLeftCornerY;
+
+	/* upper left border */
+	MoveCursor (upperLeftCornerX, upperLeftCornerY);
+	printf ("%c", 201); 
+
+	/* upper right border */
+	MoveCursor (lowerRightCornerX, upperLeftCornerY);
+	printf ("%c", 187);
+
+	/* lower left border */
+	MoveCursor (upperLeftCornerX, lowerRightCornerY);
+	printf ("%c", 200);
+
+	/* lower right border */
+	MoveCursor (lowerRightCornerX, lowerRightCornerY);
+	printf ("%c", 188);
+
+	/* top and bottom side border */
+	while (x < lowerRightCornerX - 1)
+	{
+		MoveCursor (++x, upperLeftCornerY);
+		printf ("%c", 205);
+		MoveCursor (x, lowerRightCornerY);
+		printf ("%c", 205);
+	}
+
+	/* left and right side border */
+	while (y < lowerRightCornerY - 1)
+	{
+		MoveCursor (upperLeftCornerX, ++y);
+		printf ("%c", 186);
+		MoveCursor (lowerRightCornerX, y);
+		printf ("%c", 186);
+	}
+
+	/* clears whats inside the border */
+	for (y = upperLeftCornerY + 1; y < lowerRightCornerY; y++)
+		for (x = upperLeftCornerX + 1; x < lowerRightCornerX; x++) {
+			MoveCursor (x, y);
+			printf ("%c", fill);
+		}
+
+	/* moves cursor to the upper left corner of the border */
+	MoveCursor (upperLeftCornerX + 1, upperLeftCornerY + 1);
 }
