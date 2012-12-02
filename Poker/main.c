@@ -9,6 +9,7 @@
  +==============================================================================*/
 #include "poker.h"
 
+
 int main (void) 
 {
 	/* initialize suit array */
@@ -24,6 +25,9 @@ int main (void)
 	int faceCounter[N_PLAYERS][N_FACES] = {0};
 
 	short player = -1;
+	short numDealtCard = 0;
+	short menu = -1;
+	short swapStatus = 0;
 
 	/* Player 0 is Dealer and 1 is Player 1 */
 	Card playersHand[N_PLAYERS][N_CARDS_ON_HAND];
@@ -31,11 +35,14 @@ int main (void)
 	/* seed random-number generator */
 	Randomize ();
 
+	/* draws border on the screen */
+	DrawBorder (0, 0, 79, 24);
 
 	/* play number of games specified by macro constant value */
 	while (True) {
 		/* initialization */
 		player = -1;
+		swapStatus = 0;
 		init (deckOfCard, suitCounter, faceCounter);
 
 		/* shuffles the deck of cards */
@@ -44,6 +51,9 @@ int main (void)
 		/* deals card to dealer and player(s) */
 		deal (deckOfCard, face, suit, playersHand);
 		
+		/* number of dealt card is 10 */
+		numDealtCard = N_PLAYERS * N_CARDS_ON_HAND;
+
 		/* sorts hand descendingly */
 		sortHand (playersHand [0]);
 		sortHand (playersHand [1]);
@@ -51,37 +61,53 @@ int main (void)
 		/* count repetitions of suits and faces */
 		countSuitsAndFaces (suitCounter, faceCounter, playersHand);
 
-		/* draws border on the screen */
-		DrawBorder (0, 0, 79, 24);
-
 		/* draws player's card */
 		drawPlayerHand (playersHand [1]);
 
 		/* draws simulated cards for dealer */
 		drawDealerHand (playersHand [0], True);
 
-		/* draws border for output box */
-		drawOutputBox ("> Use ARROW KEYS to select from MENU");
+		while (True) {
+			/* draws border for output box */
+			drawOutputBox ("> Use ARROW KEYS to select from MENU");
 
-		/* draws player menu */
-		drawMenu ();
+			/* draws player menu */
+			drawMenu ();
 		
-		switch (selectMenuItem ()) {
-			case PLAY_GAME:
-				player = checkWin (faceCounter, suitCounter);
-				drawOutputBox (player == 0 ? "> Dealer wins!" : "> Player wins!");
-				break;
-			case SWAP_CARDS:
-			case STATS:
-			case QUIT_GAME:
-				ClearScreen();
-				exit (1);
-				break;
-		}
+			switch (selectMenuItem ()) {
+				case PLAY_GAME:
+					/* DEALER */
 
-		MoveCursor (34, 16);
-		printf ("> Press <ENTER> for another game");
-		getch ();
+
+					player = checkWin (faceCounter, suitCounter);
+					drawOutputBox (player == 0 ? "> Dealer wins!" : "> Player wins!");
+					MoveCursor (34, 16);
+					printf ("> Press <ENTER> for another game");
+					getch ();
+					break;
+				case SWAP_CARDS:
+					if (swapStatus == 0) {
+						swapCards (playersHand, face, suit);
+						if (selectSwapMenuItem (playersHand, deckOfCard, &numDealtCard) > 0) {
+							drawPlayerHand (playersHand [1]);
+							swapStatus = 1;
+						}
+					} else {
+						drawOutputBox ("> ERROR: You already swap card(s)!");
+						MoveCursor (34, 16);
+						printf ("> Press <ENTER> to continue");
+						getch ();
+					}
+					break;
+				case STATS:
+				case QUIT_GAME:
+					ClearScreen();
+					exit (1);
+					break;
+			}
+
+			if (player != -1) break;
+		}
 	}
 
 	getch ();
@@ -91,15 +117,12 @@ int main (void)
 (2) (20 pts) Use the functions developed in (1) to deal two five-card poker 
     hands, evaluate each hand, and determine which is the better hand.
 	    
-
 (3) (25 pts) Simulate the dealer. The dealer's five-card hand is dealt 
     "face down" so the player cannot see it. The program should then 
 	evaluate the dealer's hand, and based on the quality of the hand, the 
 	dealer should draw one, two, or three more cards to replace the 
 	corresponding number of unneeded cards in the original hand. The 
 	program should then re-evaluate the dealer's hand.
-
- 
 
 (4) (20 pts) Make the program handle the dealer's five-card hand 
     automatically. The player should be allowed to decide which cards of 

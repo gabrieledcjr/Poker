@@ -83,6 +83,12 @@ short selectMenuItem      (void);
 short checkHandCategory   (const int wFace[], const int wSuit[]);
 short checkWin            (const int wFace[][N_FACES], const int wSuit[][N_SUITS]);
 
+void  swapCards           (Card playersHand[][N_CARDS_ON_HAND], 
+	                       const char *wFace[], const char *wSuit[]);
+short selectSwapMenuItem  (Card playersHand[][N_CARDS_ON_HAND], int wDeck[][N_FACES], 
+	                       short *numDealtCard);
+Card  dealNextCard        (int wDeck[][N_FACES], short numDealtCard);
+
 Boolean  isOnePair       (const int wFace[]);
 Boolean  isTwoPair       (const int wFace[]);
 Boolean  isThreeOfAKind  (const int wFace[]);

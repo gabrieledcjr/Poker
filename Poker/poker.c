@@ -278,12 +278,10 @@ short selectMenuItem (void) {
 
 	do {
 		ch = getch ();
-		switch(ch) 
-		{ 
+		switch(ch) { 
 			case ARROW_KEY_UP: 
 				/* UP arrow key is pressed */
-				if (cursorY == MENU_Y) 
-				{
+				if (cursorY == MENU_Y) {
 					MoveCursor (cursorX, cursorY);
 					printf (" ");
 					cursorY = MENU_Y + 3;
@@ -292,9 +290,7 @@ short selectMenuItem (void) {
 					MoveCursor (cursorX, cursorY);
 
 					menuItem = QUIT_GAME;
-				}	
-				else if (cursorY > MENU_Y) 
-				{
+				} else if (cursorY > MENU_Y) {
 					MoveCursor (cursorX, cursorY);
 					printf (" ");
 					cursorY--;
@@ -308,8 +304,7 @@ short selectMenuItem (void) {
 
 			case ARROW_KEY_DOWN: 
 				/* DOWN arrow key is pressed */
-				if (cursorY < MENU_Y + 3)
-				{
+				if (cursorY < MENU_Y + 3) {
 					MoveCursor (cursorX, cursorY);
 					printf (" ");
 					cursorY++;
@@ -318,9 +313,7 @@ short selectMenuItem (void) {
 					MoveCursor (cursorX, cursorY);
 
 					menuItem++;
-				} 
-				else if (cursorY == MENU_Y + 3) 
-				{
+				} else if (cursorY == MENU_Y + 3) {
 					MoveCursor (cursorX, cursorY);
 					printf (" ");
 					cursorY = MENU_Y;
@@ -376,6 +369,113 @@ short checkWin (const int wFace[][N_FACES], const int wSuit[][N_SUITS]) {
 	else player = 1;
 
 	return player;
+}
+
+void swapCards (Card playersHand[][N_CARDS_ON_HAND], const char *wFace[], const char *wSuit[]) {
+	short i = 0, j = 0;
+
+	drawOutputBox (" ");
+	printf ("SELECT CARDS TO SWAP");
+
+	for (i = 0; i < N_CARDS_ON_HAND; i++) {
+		MoveCursor (34, 16 + i);
+		printf ("  [ ] %s of %s", wFace[playersHand[1][i].faceIndex], wSuit[playersHand[1][i].suitIndex]);
+	}
+
+	MoveCursor (34, 16 + i);
+	printf (" Use SPACEBAR to select/deselect");
+	MoveCursor (34, 16 + i + 1);
+	printf (" Press ENTER to continue");
+}
+
+short selectSwapMenuItem (Card playersHand[][N_CARDS_ON_HAND], int wDeck[][N_FACES], 
+	                     short *numDealtCard) {
+	Card hand;
+	short countSwap = 0;
+	short cursorX = 37,
+		  cursorY = 16;
+	short holdCard[5] = {0};
+	char ch = '\0';
+
+	int i = 0;
+
+	MoveCursor (cursorX, cursorY);
+
+	do {
+		ch = getch ();
+		switch(ch) { 
+			case ARROW_KEY_UP: 
+				/* UP arrow key is pressed */
+				if (cursorY == 16) {
+					cursorY = cursorY + 4;
+					MoveCursor (cursorX, cursorY);
+				} else if (cursorY > 16) {
+					cursorY--;
+					MoveCursor (cursorX, cursorY);
+				} 		
+				break;
+
+			case ARROW_KEY_DOWN: 
+				/* DOWN arrow key is pressed */
+				if (cursorY < 20) {
+					cursorY++;
+					MoveCursor (cursorX, cursorY);
+				} else if (cursorY == 20) {
+					cursorY = 16;
+					MoveCursor (cursorX, cursorY);
+				}
+				break; 
+
+			case SPACE_BAR:
+				/* SPACEBAR key is pressed */
+				if (!(holdCard [cursorY % 16])) {
+					printf ("X");
+					MoveCursor (cursorX, cursorY);
+				} else {
+					printf (" ");
+					MoveCursor (cursorX, cursorY);
+				}
+
+				holdCard [cursorY % 16] = !(holdCard [cursorY % 16]);
+				break;
+		}
+	} while (ch != 13);
+
+	drawOutputBox (" ");
+	for (i = 0; i < N_CARDS_ON_HAND; i++) {
+		if (holdCard[i] == 1) { 
+			countSwap++;
+			hand = dealNextCard (wDeck, ++(*numDealtCard));
+			playersHand[1][i].cardNumber = hand.cardNumber;
+			playersHand[1][i].faceIndex = hand.faceIndex;
+			playersHand[1][i].suitIndex = hand.suitIndex;
+		}
+	}
+
+	return countSwap;
+}
+
+Card dealNextCard (int wDeck[][N_FACES], short numDealtCard) {
+	Card hand = {0, 0, 0};
+	short row = 0, column = 0;
+
+	/* loop through rows of wDeck */
+	for (row = 0; row < N_SUITS; row++) {
+
+		/* loop through columns of wDeck for current row */
+		for (column = 0; column < N_FACES; column++) {
+
+			/* if slot contains current card, display card */
+			if (wDeck[row][column] == numDealtCard) {
+				//printf ("%5s of %-8s%c", wFace[column], wSuit[row], player == N_PLAYERS - 1 ? '\n' : '\t');
+				hand.suitIndex = row;
+				hand.faceIndex = column;
+				hand.cardNumber = numDealtCard;
+			}
+		}
+	}
+
+	return hand;
 }
 
 /**
