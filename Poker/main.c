@@ -19,6 +19,19 @@ int main (void)
 	const char *face[N_FACES] = {"Ace", "Deuce", "Three", "Four", "Five", 
 		                         "Six", "Seven", "Eight", "Nine", "Ten", 
 							     "Jack", "Queen", "King"};
+	
+	const char *category[N_HAND_CATEGORIES] = {"ROYAL FLUSH", 
+	                                           "STRAIGHT FLUSH", 
+	                                           "FOUR OF A KIND", 
+	                                           "FULL HOUSE", 
+	                                           "FLUSH", 
+	                                           "STRAIGHT", 
+	                                           "THREE OF A KIND", 
+	                                           "TWO PAIR", 
+	                                           "ONE PAIR", 
+	                                           "HIGH CARD"};
+
+	char winMessage [30];
 
 	int deckOfCard[N_SUITS][N_FACES]    = {0};
 	int suitCounter[N_PLAYERS][N_SUITS] = {0};
@@ -28,6 +41,7 @@ int main (void)
 	short numDealtCard = 0;
 	short menu = -1;
 	short swapStatus = 0;
+	short winningCategory = -1;
 
 	/* Player 0 is Dealer and 1 is Player 1 */
 	Card playersHand[N_PLAYERS][N_CARDS_ON_HAND];
@@ -42,8 +56,14 @@ int main (void)
 	while (True) {
 		/* initialization */
 		player = -1;
+		winningCategory = -1;
 		swapStatus = 0;
-		init (deckOfCard, suitCounter, faceCounter);
+		strcpy (winMessage, "");
+
+		/* initializes deck, suit and face counter to 0 */
+		init (deckOfCard);
+		resetSuitCounter (suitCounter);
+		resetFaceCounter (faceCounter);
 
 		/* shuffles the deck of cards */
 		shuffle (deckOfCard);
@@ -65,9 +85,10 @@ int main (void)
 		drawPlayerHand (playersHand [1]);
 
 		/* draws simulated cards for dealer */
-		drawDealerHand (playersHand [0], True);
+		drawDealerHand (playersHand [0], False);
 
 		while (True) {
+
 			/* draws border for output box */
 			drawOutputBox ("> Use ARROW KEYS to select from MENU");
 
@@ -75,21 +96,46 @@ int main (void)
 			drawMenu ();
 		
 			switch (selectMenuItem ()) {
+
 				case PLAY_GAME:
 					/* DEALER */
+					playDealerHand (playersHand, deckOfCard, &numDealtCard, faceCounter, suitCounter);
 
+					player = checkWin (&winningCategory, faceCounter, suitCounter);
+					if (player == 0) { /* Dealer wins */
+						strcpy (winMessage, "> Dealer wins with ");
+						strcat (winMessage, category[winningCategory]);
+					}
+					else if (player == 1) { /* Player wins */
+						strcpy (winMessage, "> Player wins with ");
+						strcat (winMessage, category[winningCategory]);
+					} else { /* Draw */
+						strcpy (winMessage, "> It's a draw!");
+					}
 
-					player = checkWin (faceCounter, suitCounter);
-					drawOutputBox (player == 0 ? "> Dealer wins!" : "> Player wins!");
+					/* draws simulated cards for dealer */
+					drawDealerHand (playersHand [0], True);
+
+					drawOutputBox (winMessage);
 					MoveCursor (34, 16);
 					printf ("> Press <ENTER> for another game");
 					getch ();
 					break;
+
 				case SWAP_CARDS:
 					if (swapStatus == 0) {
 						swapCards (playersHand, face, suit);
 						if (selectSwapMenuItem (playersHand, deckOfCard, &numDealtCard) > 0) {
+							sortHand (playersHand [1]);
 							drawPlayerHand (playersHand [1]);
+
+							/* resets suit and face counter to 0 */
+							resetSuitCounter (suitCounter);
+							resetFaceCounter (faceCounter);
+
+							/* count repetitions of suits and faces */
+							countSuitsAndFaces (suitCounter, faceCounter, playersHand);
+
 							swapStatus = 1;
 						}
 					} else {
@@ -99,7 +145,9 @@ int main (void)
 						getch ();
 					}
 					break;
+
 				case STATS:
+
 				case QUIT_GAME:
 					ClearScreen();
 					exit (1);

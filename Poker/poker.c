@@ -1,20 +1,28 @@
 #include "poker.h"
 
 /* initializing variables */
-void init (int deckOfCard[][N_FACES], int suit[][N_SUITS], int face[][N_FACES]) {
+void init (int deckOfCard[][N_FACES]) {
 	int i = 0, j = 0;
 
 	for (i = 0; i < N_SUITS; i++)
 		for (j = 0; j < N_FACES; j++)
 			deckOfCard[i][j] = 0;
+}
 
-	for (i = 0; i < N_PLAYERS; i++) {
+void resetSuitCounter (int suit[][N_SUITS]) {
+	int i = 0, j = 0;
+
+	for (i = 0; i < N_PLAYERS; i++) 
 		for (j = 0; j < N_SUITS; j++)
 			suit[i][j] = 0;
+}
+
+void resetFaceCounter (int face[][N_FACES]) {
+	int i = 0, j = 0;
+
+	for (i = 0; i < N_PLAYERS; i++)
 		for (j = 0; j < N_FACES; j++)
 			face[i][j] = 0;
-	}
-
 }
 
 /* shuffle cards in deck */
@@ -266,6 +274,35 @@ void drawMenu (void) {
 	printf ("[ ] QUIT GAME");
 }
 
+
+void playDealerHand (Card playersHand[][N_CARDS_ON_HAND], int wDeck[][N_FACES], 
+	                 short *numDealtCard, int wFace[][N_FACES], int wSuit[][N_SUITS]) {
+	
+	switch (checkHandCategory (wFace[0], wSuit[0])) {
+
+		case ROYAL_FLUSH:
+
+		case STRAIGHT_FLUSH:
+
+		case FOUR_OF_A_KIND:
+
+		case FULL_HOUSE:
+
+		case FLUSH:
+
+		case STRAIGHT:
+
+		case THREE_OF_A_KIND:
+
+		case TWO_PAIR:
+
+		case ONE_PAIR:
+
+		case HIGH_CARD:
+
+	}
+}
+
 short selectMenuItem (void) {
 	short cursorX = MENU_X,
           cursorY = MENU_Y,
@@ -357,17 +394,275 @@ short checkHandCategory (const int wFace[], const int wSuit[]) {
 	return category;
 }
 
-short checkWin (const int wFace[][N_FACES], const int wSuit[][N_SUITS]) {
+short checkWin (short *winningCategory, const int wFace[][N_FACES], const int wSuit[][N_SUITS]) {
 	int player = -1;
-	short category[2] = {0};
+	short category[2] = {-1};
+	short i = 0;
 
 	for (player = 0; player < N_PLAYERS; player++) {
-		category [player] = checkHandCategory (wFace[player], wSuit[player]);
+		category[player] = checkHandCategory (wFace[player], wSuit[player]);
 	}
 
-	if (category[0] < category [1]) player = 0;
-	else player = 1;
+	if (category[0] < category[1]) { player = 0; } 
+	else if (category[0] == category[1]) {
+		switch (category [0]) {
 
+			case FOUR_OF_A_KIND:
+				/* checks if either player has four of a kind ACE card */
+				if (wFace[0][ACE] == 4)      { player = 0; } 
+				else if (wFace[1][ACE] == 4) { player = 1; }
+				else {
+					for (i = N_FACES - 1; i >= 0 ; i--) {
+
+						/* checks that either face is not zero */
+						if (wFace[0][i] != 0 || wFace[1][i] != 0) {
+
+							/* Dealer has higher card */
+							if (wFace[0][i] == 4) {
+								player = 0;
+								break;
+							}
+
+							/* Player has higher card */
+							if (wFace[1][i] == 4) {
+								player = 1;
+								break;
+							}
+						}
+					}
+				}
+				break;
+
+			case STRAIGHT_FLUSH: /* will be checked the same way as straight */
+			case STRAIGHT:
+				for (i = N_FACES - 1; i >= 0 ; i--) {
+					/* checks that either face is not zero */
+					if (wFace[0][i] != 0 || wFace[1][i] != 0) {
+						/* If highest face is equal */
+						if (wFace[0][i] == wFace[1][i]) {
+							/* i is King */
+							if (i == KING) {
+								/* check if ACE is 1 */
+								if ((wFace[0][ACE] == 1) && (wFace[1][ACE] == 1))
+									player = 2;
+								else if ((wFace[0][ACE] == 1) && (wFace[1][ACE] == 0))
+									player = 0;
+								else if ((wFace[0][ACE] == 0) && (wFace[1][ACE] == 1))
+									player = 1;
+								else /* No ACE, King is highest for both player */
+									player = 2;
+
+							} else { player = 2; } /* highest suit are equal */
+
+							/* Breaks out of loop */
+							/* Only need to check highest face card */
+							break;
+						}
+
+						/* Dealer has higher card */
+						if (wFace[0][i] == 1 && wFace[1][i] == 0) {
+							player = 0;
+							break;
+						}
+
+						/* Player has higher card */
+						if (wFace[0][i] == 0 && wFace[1][i] == 1) {
+							player = 1;
+							break;
+						}
+					}
+				}
+				break;
+
+			case FULL_HOUSE: /* will be checked the same way as three of a kind */
+			case THREE_OF_A_KIND:
+				/* checks if either player has three of a kind ACE card */
+				if (wFace[0][ACE] == 3)      { player = 0; } 
+				else if (wFace[1][ACE] == 3) { player = 1; }
+				else {
+					for (i = N_FACES - 1; i >= 0 ; i--) {
+
+						/* checks that either face is not zero */
+						if (wFace[0][i] != 0 || wFace[1][i] != 0) {
+
+							/* Dealer has higher card */
+							if (wFace[0][i] == 3) {
+								player = 0;
+								break;
+							}
+
+							/* Player has higher card */
+							if (wFace[1][i] == 3) {
+								player = 1;
+								break;
+							}
+						}
+					}
+				}
+				break;
+
+			case TWO_PAIR:
+				/* checks if either player has pair of ACE card */
+				if (wFace[0][ACE] == 2 && wFace[1][ACE] < 2)      { player = 0; }
+				else if (wFace[0][ACE] < 2 && wFace[1][ACE] == 2) { player = 1; }
+				else {
+					for (i = N_FACES - 1; i >= 0 ; i--) {
+						/* checks that either face is not zero */
+						if (wFace[0][i] != 0 || wFace[1][i] != 0) {
+
+							/* Dealer has higher card */
+							if (wFace[0][i] == 2 && wFace[1][i] < 2) {
+								player = 0;
+								break;
+							}
+
+							/* Player has higher card */
+							if (wFace[0][i] < 2 && wFace[1][i] == 2) {
+								player = 1;
+								break;
+							}
+
+							/* Player has the same first pair */
+							if (wFace[0][i] == 2 && wFace[1][i] == 2) {
+								/* loops through the remaining cards */
+								for (i = i - 1; i >= 0; i--) {
+
+									/* checks that either face is not zero */
+									if (wFace[0][i] != 0 || wFace[1][i] != 0) {
+
+										/* Dealer has higher card */
+										if (wFace[0][i] == 2 && wFace[1][i] < 2) {
+											player = 0;
+											break;
+										}
+
+										/* Player has higher card */
+										if (wFace[0][i] < 2 && wFace[1][i] == 2) {
+											player = 1;
+											break;
+										}
+
+										/* Player also has the same second pair */
+										if (wFace[0][i] == 2 && wFace[1][i] == 2) {
+											/* loops through the remaining cards */
+											for (i = i - 1; i >= 0; i--) {
+
+												/* checks that either face is not zero */
+												if (wFace[0][i] != 0 || wFace[1][i] != 0) {
+
+													/* Dealer has higher card */
+													if (wFace[0][i] == 1 &&  wFace[1][i] == 0) {
+														player = 0;
+														break;
+													}
+
+													/* Player has higher card */
+													if (wFace[0][i] == 0 &&  wFace[1][i] == 1) {
+														player = 1;
+														break;
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+
+						}
+					}
+
+					/* Players all have the same card */
+					if (player == -1) player = 2;
+					break;
+				}
+				break;
+
+			case ONE_PAIR:
+				/* checks if either player has pair of ACE card */
+				if (wFace[0][ACE] == 2 && wFace[1][ACE] < 2)      { player = 0; }
+				else if (wFace[0][ACE] < 2 && wFace[1][ACE] == 2) { player = 1; }
+				else {
+					for (i = N_FACES - 1; i >= 0 ; i--) {
+
+						/* checks that either face is not zero */
+						if (wFace[0][i] != 0 || wFace[1][i] != 0) {
+
+							/* Dealer has higher card */
+							if (wFace[0][i] == 2 && wFace[1][i] < 2) {
+								player = 0;
+								break;
+							}
+
+							/* Player has higher card */
+							if (wFace[0][i] < 2 && wFace[1][i] == 2) {
+								player = 1;
+								break;
+							}
+
+							/* Player has the same pair */
+							if (wFace[0][i] == 2 && wFace[1][i] == 2) {
+								/* loops through the remaining cards */
+								for (i = i - 1; i >= 0; i--) {
+
+									/* checks that either face is not zero */
+									if (wFace[0][i] != 0 || wFace[1][i] != 0) {
+
+										/* Dealer has higher card */
+										if (wFace[0][i] == 1 &&  wFace[1][i] == 0) {
+											player = 0;
+											break;
+										}
+
+										/* Player has higher card */
+										if (wFace[0][i] == 0 &&  wFace[1][i] == 1) {
+											player = 1;
+											break;
+										}
+									}
+								}
+							}
+						}
+					}
+
+					/* Players all have the same card */
+					if (player == -1) player = 2;
+					break;
+				}
+				break;
+
+			case FLUSH: /* Flush will be check the same way as high card */
+			case HIGH_CARD:
+				/* checks if either player has an ACE card */
+				if (wFace[0][ACE] == 1 && wFace[1][ACE] == 0)      { player = 0; }
+				else if (wFace[0][ACE] == 0 && wFace[1][ACE] == 1) { player = 1; }
+				else {
+					for (i = N_FACES - 1; i >= 0; i--) {
+
+						/* checks that either face is not zero */
+						if (wFace[0][i] != 0 || wFace[1][i] != 0) {
+
+							/* Dealer has higher card */
+							if (wFace[0][i] == 1 &&  wFace[1][i] == 0) {
+								player = 0;
+								break;
+							}
+
+							/* Player has higher card */
+							if (wFace[0][i] == 0 &&  wFace[1][i] == 1) {
+								player = 1;
+								break;
+							}
+						}
+					}
+
+					/* Players all have the same card */
+					if (player == -1) player = 2;
+				} 
+				break;
+		}
+	} else { player = 1; }
+
+	*winningCategory = category[player == 2 ? 0 : player];
 	return player;
 }
 
@@ -445,7 +740,8 @@ short selectSwapMenuItem (Card playersHand[][N_CARDS_ON_HAND], int wDeck[][N_FAC
 	for (i = 0; i < N_CARDS_ON_HAND; i++) {
 		if (holdCard[i] == 1) { 
 			countSwap++;
-			hand = dealNextCard (wDeck, ++(*numDealtCard));
+			*numDealtCard += 2; /* burn a card then deal the next card */
+			hand = dealNextCard (wDeck, *numDealtCard);
 			playersHand[1][i].cardNumber = hand.cardNumber;
 			playersHand[1][i].faceIndex = hand.faceIndex;
 			playersHand[1][i].suitIndex = hand.suitIndex;
@@ -467,7 +763,6 @@ Card dealNextCard (int wDeck[][N_FACES], short numDealtCard) {
 
 			/* if slot contains current card, display card */
 			if (wDeck[row][column] == numDealtCard) {
-				//printf ("%5s of %-8s%c", wFace[column], wSuit[row], player == N_PLAYERS - 1 ? '\n' : '\t');
 				hand.suitIndex = row;
 				hand.faceIndex = column;
 				hand.cardNumber = numDealtCard;
@@ -674,7 +969,7 @@ Boolean isStraight (const int wFace[]) {
 			if ((i + 4) < N_FACES) {
 				result = True;
 				/* loop to check that it forms a straight */
-				for (j = i + 1; j < i + 4; j++) {
+				for (j = i + 1; j < i + 5; j++) {
 					if (wFace[j] != 1) {
 						result = False;
 						break;
