@@ -85,7 +85,7 @@ int main (void)
 		drawPlayerHand (playersHand [1]);
 
 		/* draws simulated cards for dealer */
-		drawDealerHand (playersHand [0], False);
+		drawDealerHand (playersHand [0], True);
 
 		while (True) {
 
@@ -100,6 +100,13 @@ int main (void)
 				case PLAY_GAME:
 					/* DEALER */
 					playDealerHand (playersHand, deckOfCard, &numDealtCard, faceCounter, suitCounter);
+
+					/* resets suit and face counter to 0 */
+					resetSuitCounter (suitCounter);
+					resetFaceCounter (faceCounter);
+
+					/* count repetitions of suits and faces */
+					countSuitsAndFaces (suitCounter, faceCounter, playersHand);
 
 					player = checkWin (&winningCategory, faceCounter, suitCounter);
 					if (player == 0) { /* Dealer wins */
@@ -128,13 +135,6 @@ int main (void)
 						if (selectSwapMenuItem (playersHand, deckOfCard, &numDealtCard) > 0) {
 							sortHand (playersHand [1]);
 							drawPlayerHand (playersHand [1]);
-
-							/* resets suit and face counter to 0 */
-							resetSuitCounter (suitCounter);
-							resetFaceCounter (faceCounter);
-
-							/* count repetitions of suits and faces */
-							countSuitsAndFaces (suitCounter, faceCounter, playersHand);
 
 							swapStatus = 1;
 						}

@@ -274,33 +274,178 @@ void drawMenu (void) {
 	printf ("[ ] QUIT GAME");
 }
 
+short getIndexOfCardFromHand (Card playersHand[], int faceIndex) {
+	int i = 0;
+
+	for (i = 0; i < N_CARDS_ON_HAND; i++) {
+		if (playersHand[i].faceIndex == faceIndex)
+			return i;
+	}
+
+	return -1;
+}
 
 void playDealerHand (Card playersHand[][N_CARDS_ON_HAND], int wDeck[][N_FACES], 
 	                 short *numDealtCard, int wFace[][N_FACES], int wSuit[][N_SUITS]) {
+	Card hand;
+	Boolean categorySelected = False;
+
+	short swapCard[5] = {0};
+	short i = 0, j = 0, k = 0, countSwap = 0;
+	short category = checkHandCategory (wFace[0], wSuit[0]);
 	
-	switch (checkHandCategory (wFace[0], wSuit[0])) {
 
-		case ROYAL_FLUSH:
+	drawOutputBox ("> Dealer making move.");
+	Pause (400);
 
-		case STRAIGHT_FLUSH:
+	switch (category) {
 
-		case FOUR_OF_A_KIND:
+		/* Probability of a High Card is 50.11% */
+		case HIGH_CARD: 
 
-		case FULL_HOUSE:
+			/* to simulate randomness of dealer whether to go for Straight or not */
+			if (RandomProbability(DEALER_RISK, 100)) {
+				/* Straight */
+				if ((wFace[0][10] + wFace[0][11] + wFace[0][12]) == 3) {
+					for (i = 0; i < N_CARDS_ON_HAND; i++)
+						if (playersHand[0][i].faceIndex == TEN || playersHand[0][i].faceIndex == ACE)
+							swapCard[i] = 1;
 
-		case FLUSH:
+					categorySelected = True;
+				}
 
-		case STRAIGHT:
+				/* Straight */
+				for (i = 0; i < N_FACES - 5 && !categorySelected; i++) {
 
-		case THREE_OF_A_KIND:
+					/* in the series of 5 face card, if four are consecutive, then go for straight */
+					if ((wFace[0][i] + wFace[0][i + 1] + wFace[0][i + 2] + wFace[0][i + 3] + wFace[0][i + 4]) == 4) {
+						for (j = 0; j < N_FACES; j++) 
+							if (j < i || j > i + 4)
+								if (wFace[0][j] == 1) {
+									for (k = 0; k < N_CARDS_ON_HAND; k++)
+										if (playersHand[0][k].faceIndex == j) {
+											swapCard[k] = 1;
+											break;
+										}
+									break;
+								}
+						
+						categorySelected = True;
+					}
 
-		case TWO_PAIR:
+					/* in the series of 5 face card, the mid three cards are consecutive, then go for straight */
+					else if ((wFace[0][i + 1] + wFace[0][i + 2] + wFace[0][i + 3]) == 3) {
+						for (j = 0; j < N_FACES; j++)
+							if (j < i || j > i + 3) 
+								if (wFace[0][j] == 1)
+									for (k = 0; k < N_CARDS_ON_HAND; k++)
+										if (playersHand[0][k].faceIndex == j)
+											swapCard[k] = 1;
 
+						categorySelected = True;
+					}
+				}
+			}
+
+			/* to simulate randomness of dealer whether to go for Flush or not */
+			/* since there are only two players, the chances are close to 50/50 */
+			if (RandomProbability(DEALER_RISK, 100) && !categorySelected) {
+				/* Probability of a Flush is 0.196% */
+				for (i = 0; i < N_SUITS; i++) {
+					/* in the series of 5 face card, if three or more are the same suit, then go for flush */
+					if (wSuit[0][i] >= 3) {
+						for (j = 0; j < N_CARDS_ON_HAND; j++) 
+							if (playersHand[0][j].suitIndex != i)
+								swapCard[j] = 1;
+						break;
+					}
+			
+					categorySelected = True;
+				}
+			}
+
+			for (i = 0; i < N_CARDS_ON_HAND && !categorySelected; i++) 
+				/* Not Face cards, then swap for new card */
+				if (!(playersHand[0][i].faceIndex == ACE || playersHand[0][i].faceIndex == KING ||
+					playersHand[0][i].faceIndex == QUEEN || playersHand[0][i].faceIndex == JACK))
+					swapCard[i] = 1;
+		
+			break;
+
+		/* Probability of a One Pair is 42.26% */
 		case ONE_PAIR:
 
-		case HIGH_CARD:
+			/* looking only on single cards of 2 to 13 to be replaced */
+			/* going for Three/Four of a Kind, Two Pair or Full House */
+			for (j = RandomInteger (0, 1); j < N_FACES; j++)
+				if (wFace[0][j] == 1)
+					for (i = 0; i < N_CARDS_ON_HAND; i++)
+						if (playersHand[0][i].faceIndex == j)
+							swapCard[i] = 1;
+			
+			break;
+
+		case TWO_PAIR:
+			/* Probability of a Two Pair is 4.75% */
+			
+			/* Hoping for a Full House */
+			/* looking for the single card to be replaced */
+
+		case THREE_OF_A_KIND:
+			/* Probability of a Three of a Kind is 2.11% */
+
+			/* Hoping for a Four of a Kind or Full House */
+			/* looking for the single card to be replaced */
+
+			/* Algorithm works for both two pair and three of a kind */
+			for (j = 0; j < N_FACES; j++)
+				if (wFace[0][j] == 1)
+					for (i = 0; i < N_CARDS_ON_HAND; i++)
+						if (playersHand[0][i].faceIndex == j)
+							swapCard[i] = 1;
+			break;
+
+		/* Categories below are all considered good hand */
+
+		case STRAIGHT:
+			/* Probability of a Straight is 0.39% */
+		case FLUSH:
+			/* Probability of a Flush is 0.196% */
+		case FULL_HOUSE:
+			/* Probability of a Full House is 0.1441% */
+		case FOUR_OF_A_KIND:
+			/* Probability of a Four of a Kind is 0.024% */
+		case STRAIGHT_FLUSH:
+			/* Probability of a Straight Flush is 0.0015% */
+		case ROYAL_FLUSH:
+			/* Probability of a Royal Flush is 0.000154% */
+			break;
 
 	}
+
+	drawOutputBox ("> Dealer making move..");
+	Pause (400);
+
+	for (i = 0; i < N_CARDS_ON_HAND; i++) {
+		if (swapCard[i] == 1) { 
+			countSwap++;
+			*numDealtCard += 2; /* burn a card then deal the next card */
+			hand = dealNextCard (wDeck, *numDealtCard);
+			playersHand[0][i].cardNumber = hand.cardNumber;
+			playersHand[0][i].faceIndex = hand.faceIndex;
+			playersHand[0][i].suitIndex = hand.suitIndex;
+		}
+	}
+
+	sortHand (playersHand [0]);
+
+	/* draws simulated cards for dealer */
+	drawDealerHand (playersHand [0], True);
+
+	drawOutputBox ("> Dealer making move...");
+	MoveCursor (34, 16);
+	printf ("> Dealer swapped %d card(s)", countSwap);
+	Pause (800);
 }
 
 short selectMenuItem (void) {

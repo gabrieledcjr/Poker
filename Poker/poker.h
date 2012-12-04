@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <conio.h>
 
+#define DEALER_RISK        .60    /* The higher the number, the riskier the dealer plays */
+
 #define N_CARDS_ON_DECK    52     /* Number of cards on deck */
 #define N_SUITS            4      /* Number of suits */
 #define N_FACES            13     /* Number of card numbers per suit */

@@ -30,6 +30,14 @@ int RandomInteger (int lowest, int highest) {
 		return rand () % ++highest + lowest;
 }
 
+unsigned int RandomUnsignedInteger (unsigned int lowest, unsigned int highest) {
+	if (lowest == 0)
+		return rand () % ++highest;
+	
+	if (lowest > 0)
+		return rand () % ++highest + lowest;
+}
+
 double RandomReal (double lowest, double highest) {
 	return 0.0;
 }
@@ -44,4 +52,16 @@ double RandomReal (double lowest, double highest) {
  */
 short RandomChance (void) {
 	return RandomInteger (0, 1);
+}
+
+/**
+ *
+ */
+short RandomProbability (double probability, unsigned int sampleRange) {
+	double randNumber = (double) RandomUnsignedInteger (1, sampleRange);
+
+	if ((randNumber / (double) sampleRange) <= probability)
+		return 1;
+	else
+		return 0;
 }
