@@ -1,3 +1,13 @@
+/*==============================================================================
+ | Filename: poker.h                                                     
+ | Programmer: Gabriel V. de a Cruz Jr.                                  
+ | Class: CptS 121, Fall 2012 ; Lab Section 7                            
+ | Programming Assignment 7: Poker (5-Card Draw)                    
+ | Date: November 27, 2012                                                 
+ +------------------------------------------------------------------------------
+ | Description: This file the macro constants, standard libraries, structs, 
+ |              enums and function headers
+ +==============================================================================*/
 #ifndef POKER_H
 #define POKER_H
 
@@ -20,10 +30,10 @@
 #define SPACE_BAR          32     /* value for space bar */
 
 #define CURSOR_SYMBOL      236    /* ASCII value of infinity symbol */
-#define MENU_X             63
-#define MENU_Y             4
+#define MENU_X             63     /* Menu x coordinate */
+#define MENU_Y             4      /* Menu y coordinate */
 
-#define PLAY_GAME          1
+#define PLAY_GAME          1      /* Menu items */
 #define SWAP_CARDS         2
 #define STATS              3
 #define QUIT_GAME          4
@@ -85,13 +95,12 @@ void  drawMenu            (void);
 
 void  playDealerHand      (Card playersHand[][N_CARDS_ON_HAND], int wDeck[][N_FACES], 
 	                       short *numDealtCard, int wFace[][N_FACES], int wSuit[][N_SUITS]);
+void  swapCards           (Card playersHand[][N_CARDS_ON_HAND], 
+	                       const char *wFace[], const char *wSuit[]);
 
 short selectMenuItem      (void);
 short checkHandCategory   (const int wFace[], const int wSuit[]);
 short checkWin            (short *winningCategory, const int wFace[][N_FACES], const int wSuit[][N_SUITS]);
-
-void  swapCards           (Card playersHand[][N_CARDS_ON_HAND], 
-	                       const char *wFace[], const char *wSuit[]);
 short selectSwapMenuItem  (Card playersHand[][N_CARDS_ON_HAND], int wDeck[][N_FACES], 
 	                       short *numDealtCard);
 Card  dealNextCard        (int wDeck[][N_FACES], short numDealtCard);

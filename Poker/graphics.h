@@ -1,3 +1,13 @@
+/*==============================================================================
+ | Filename: graphics.h                                                     
+ | Programmer: Gabriel V. de a Cruz Jr.                                  
+ | Class: CptS 121, Fall 2012 ; Lab Section 7                            
+ | Programming Assignment 7: Poker (5-Card Draw)                    
+ | Date: November 27, 2012                                                 
+ +------------------------------------------------------------------------------
+ | Description: This file is paired with graphics.c for the purpose of reusing 
+ |              these functions for future programs. 
+ +==============================================================================*/
 #ifndef GRAPHICS_H
 #define GRAPHICS_H
 

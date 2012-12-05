@@ -1,6 +1,23 @@
+/*==============================================================================
+ | Filename: poker.c                                                      
+ | Programmer: Gabriel V. de a Cruz Jr.                                  
+ | Class: CptS 121, Fall 2012 ; Lab Section 7                            
+ | Programming Assignment 7: Poker (5-Card Draw)                    
+ | Date: November 27, 2012                                                 
+ +------------------------------------------------------------------------------
+ | Description: This file houses the function definition required to run the
+ |              Five Card Draw poker game.
+ +==============================================================================*/
 #include "poker.h"
 
-/* initializing variables */
+
+/**
+ * Function name : init ()
+ * Date Created  : 27 November 2012
+ * Definition    : This function initializes the deck of cards array
+ * Pre-condition : n/a
+ * Post-condition: n/a
+ */
 void init (int deckOfCard[][N_FACES]) {
 	int i = 0, j = 0;
 
@@ -9,6 +26,13 @@ void init (int deckOfCard[][N_FACES]) {
 			deckOfCard[i][j] = 0;
 }
 
+/**
+ * Function name : resetSuitCounter ()
+ * Date Created  : 27 November 2012
+ * Definition    : This function resets suit on hand counter
+ * Pre-condition : n/a
+ * Post-condition: n/a
+ */
 void resetSuitCounter (int suit[][N_SUITS]) {
 	int i = 0, j = 0;
 
@@ -17,6 +41,13 @@ void resetSuitCounter (int suit[][N_SUITS]) {
 			suit[i][j] = 0;
 }
 
+/**
+ * Function name : resetFaceCounter ()
+ * Date Created  : 27 November 2012
+ * Definition    : This function resets face on hand counter
+ * Pre-condition : n/a
+ * Post-condition: n/a
+ */
 void resetFaceCounter (int face[][N_FACES]) {
 	int i = 0, j = 0;
 
@@ -25,7 +56,13 @@ void resetFaceCounter (int face[][N_FACES]) {
 			face[i][j] = 0;
 }
 
-/* shuffle cards in deck */
+/**
+ * Function name : shuffle ()
+ * Date Created  : 27 November 2012
+ * Definition    : This function shuffles cards in deck
+ * Pre-condition : n/a
+ * Post-condition: n/a
+ */
 void shuffle (int wDeck[][N_FACES]) {
 	short row    = 0;   /* row number */
 	short column = 0;   /* column number */
@@ -44,7 +81,13 @@ void shuffle (int wDeck[][N_FACES]) {
 	}
 }
 
-/* deal cards in deck */
+/**
+ * Function name : deal ()
+ * Date Created  : 27 November 2012
+ * Definition    : This function deal cards in deck
+ * Pre-condition : n/a
+ * Post-condition: n/a
+ */
 void deal (const int wDeck[][N_FACES], const char *wFace[], 
 	       const char *wSuit[], Card hand[][N_CARDS_ON_HAND]) {
 	short row    = 0;   /* row number */
@@ -82,6 +125,13 @@ void deal (const int wDeck[][N_FACES], const char *wFace[],
 	}
 }
 
+/**
+ * Function name : sortHand ()
+ * Date Created  : 27 November 2012
+ * Definition    : This function sorts cards on hand
+ * Pre-condition : n/a
+ * Post-condition: n/a
+ */
 void sortHand (Card hand[]) {
 	int i = 0, j = 0;
 	Card temp;
@@ -97,6 +147,14 @@ void sortHand (Card hand[]) {
 	}
 }
 
+/**
+ * Function name : countSuitsAndFaces ()
+ * Date Created  : 27 November 2012
+ * Definition    : This function counts number of repetitions of
+ *                 suits and faces on hand
+ * Pre-condition : n/a
+ * Post-condition: n/a
+ */
 void countSuitsAndFaces (int wSuit[][N_SUITS], int wFace[][N_FACES], 
 	                     Card hand[][N_CARDS_ON_HAND]) {
 	int i = 0, j = 0;
@@ -112,6 +170,13 @@ void countSuitsAndFaces (int wSuit[][N_SUITS], int wFace[][N_FACES],
 		}
 }
 
+/**
+ * Function name : drawPlayerCard ()
+ * Date Created  : 27 November 2012
+ * Definition    : This functions draws a card
+ * Pre-condition : n/a
+ * Post-condition: n/a
+ */
 void drawPlayerCard (short x, short y, short suit, short face) {
 	DrawBorder (x, y, x + 11, y + 11);
 
@@ -122,7 +187,13 @@ void drawPlayerCard (short x, short y, short suit, short face) {
 	drawSuitSymbol (x + 1, y + 3, suit);
 }
 
-
+/**
+ * Function name : drawFaceCharacter ()
+ * Date Created  : 27 November 2012
+ * Definition    : This function draw the face character
+ * Pre-condition : n/a
+ * Post-condition: n/a
+ */
 void drawFaceCharacter (short type) {
 	switch (type) {
 		case ACE:   printf("A");  break;
@@ -141,6 +212,13 @@ void drawFaceCharacter (short type) {
 	}
 }
 
+/**
+ * Function name : drawSuitCharacter ()
+ * Date Created  : 27 November 2012
+ * Definition    : This function draw the suit character
+ * Pre-condition : n/a
+ * Post-condition: n/a
+ */
 void drawSuitCharacter (short type) {
 	switch (type) {
 		case HEARTS:   printf("H");  break;
@@ -150,6 +228,13 @@ void drawSuitCharacter (short type) {
 	}
 }
 
+/**
+ * Function name : drawSuitSymbol ()
+ * Date Created  : 27 November 2012
+ * Definition    : This function draws the suit symbols
+ * Pre-condition : n/a
+ * Post-condition: n/a
+ */
 void drawSuitSymbol (short x, short y, short type) {
 	switch (type) {
 		case HEARTS:
@@ -219,6 +304,13 @@ void drawSuitSymbol (short x, short y, short type) {
 	}
 }
 
+/**
+ * Function name : drawPlayerHand ()
+ * Date Created  : 27 November 2012
+ * Definition    : This function draws the player's hand on screen
+ * Pre-condition : n/a
+ * Post-condition: n/a
+ */
 void drawPlayerHand (Card playersHand []) {
 	short i = 0;
 	short x = 1;
@@ -232,6 +324,13 @@ void drawPlayerHand (Card playersHand []) {
 	}
 }
 
+/**
+ * Function name : drawDealerCard ()
+ * Date Created  : 27 November 2012
+ * Definition    : This function draws a card of dealer
+ * Pre-condition : n/a
+ * Post-condition: n/a
+ */
 void drawDealerCard (short x, short y, short suit, short face, Boolean showCard) {
 	DrawBorderFill (x, y, x + 5, y + 6, showCard ? ' ' : '+');
 	
@@ -242,6 +341,13 @@ void drawDealerCard (short x, short y, short suit, short face, Boolean showCard)
 	}
 }
 
+/**
+ * Function name : drawDealerHand ()
+ * Date Created  : 27 November 2012
+ * Definition    : This function draws the dealer's hand on screen
+ * Pre-condition : n/a
+ * Post-condition: n/a
+ */
 void drawDealerHand (Card playersHand [], Boolean showCard) {
 	short i = 0;
 	short x = 2;
@@ -256,11 +362,26 @@ void drawDealerHand (Card playersHand [], Boolean showCard) {
 	}
 }
 
+/**
+ * Function name : drawOutputBox ()
+ * Date Created  : 27 November 2012
+ * Definition    : This functions draws the output box on screen with
+ *                 an option to put in a message
+ * Pre-condition : n/a
+ * Post-condition: n/a
+ */
 void drawOutputBox (const char *message) {
 	DrawBorder (33, 14, 78, 23);
 	printf ("%s", message);
 }
 
+/**
+ * Function name : drawMenu ()
+ * Date Created  : 27 November 2012
+ * Definition    : This function draws the Menu on screen
+ * Pre-condition : n/a
+ * Post-condition: n/a
+ */
 void drawMenu (void) {
 	DrawBorder (61, 1, 78, 13);
 	printf ("      MENU");
@@ -274,6 +395,13 @@ void drawMenu (void) {
 	printf ("[ ] QUIT GAME");
 }
 
+/**
+ * Function name : getIndexOfCardFromHand ()
+ * Date Created  : 27 November 2012
+ * Definition    : This function gets index of a card from hand
+ * Pre-condition : n/a
+ * Post-condition: n/a
+ */
 short getIndexOfCardFromHand (Card playersHand[], int faceIndex) {
 	int i = 0;
 
@@ -285,6 +413,13 @@ short getIndexOfCardFromHand (Card playersHand[], int faceIndex) {
 	return -1;
 }
 
+/**
+ * Function name : playDealerHand ()
+ * Date Created  : 27 November 2012
+ * Definition    : This function allows the computer to make decisions for the dealer
+ * Pre-condition : n/a
+ * Post-condition: n/a
+ */
 void playDealerHand (Card playersHand[][N_CARDS_ON_HAND], int wDeck[][N_FACES], 
 	                 short *numDealtCard, int wFace[][N_FACES], int wSuit[][N_SUITS]) {
 	Card hand;
@@ -380,7 +515,9 @@ void playDealerHand (Card playersHand[][N_CARDS_ON_HAND], int wDeck[][N_FACES],
 			for (j = RandomInteger (0, 1); j < N_FACES; j++)
 				if (wFace[0][j] == 1)
 					for (i = 0; i < N_CARDS_ON_HAND; i++)
-						if (playersHand[0][i].faceIndex == j)
+						if (playersHand[0][i].faceIndex == j    && playersHand[0][i].faceIndex != ACE   && 
+							playersHand[0][i].faceIndex != KING && playersHand[0][i].faceIndex != QUEEN && 
+							playersHand[0][i].faceIndex != JACK)
 							swapCard[i] = 1;
 			
 			break;
@@ -439,15 +576,44 @@ void playDealerHand (Card playersHand[][N_CARDS_ON_HAND], int wDeck[][N_FACES],
 
 	sortHand (playersHand [0]);
 
-	/* draws simulated cards for dealer */
-	drawDealerHand (playersHand [0], True);
-
 	drawOutputBox ("> Dealer making move...");
 	MoveCursor (34, 16);
 	printf ("> Dealer swapped %d card(s)", countSwap);
 	Pause (800);
 }
 
+/**
+ * Function name : swapCards ()
+ * Date Created  : 27 November 2012
+ * Definition    : This function always player to swap cards
+ * Pre-condition : n/a
+ * Post-condition: n/a
+ */
+void swapCards (Card playersHand[][N_CARDS_ON_HAND], const char *wFace[], const char *wSuit[]) {
+	short i = 0, j = 0;
+
+	drawOutputBox (" ");
+	printf ("SELECT CARDS TO SWAP");
+
+	for (i = 0; i < N_CARDS_ON_HAND; i++) {
+		MoveCursor (34, 16 + i);
+		printf ("  [ ] %s of %s", wFace[playersHand[1][i].faceIndex], wSuit[playersHand[1][i].suitIndex]);
+	}
+
+	MoveCursor (34, 16 + i);
+	printf (" Use SPACEBAR to select/deselect");
+	MoveCursor (34, 16 + i + 1);
+	printf (" Press ENTER to continue");
+}
+
+/**
+ * Function name : selectMenuItem ()
+ * Date Created  : 27 November 2012
+ * Definition    : This function allows user to use arrow keys
+ *                 to selection item from menu
+ * Pre-condition : n/a
+ * Post-condition: n/a
+ */
 short selectMenuItem (void) {
 	short cursorX = MENU_X,
           cursorY = MENU_Y,
@@ -512,6 +678,13 @@ short selectMenuItem (void) {
 	return menuItem;
 }
 
+/**
+ * Function name : checkHandCategory ()
+ * Date Created  : 27 November 2012
+ * Definition    : This function returns category of card on hand
+ * Pre-condition : n/a
+ * Post-condition: n/a
+ */
 short checkHandCategory (const int wFace[], const int wSuit[]) {
 	short category = 0;
 
@@ -539,6 +712,13 @@ short checkHandCategory (const int wFace[], const int wSuit[]) {
 	return category;
 }
 
+/**
+ * Function name : checkWin ()
+ * Date Created  : 27 November 2012
+ * Definition    : This function checks who wins the play
+ * Pre-condition : n/a
+ * Post-condition: n/a
+ */
 short checkWin (short *winningCategory, const int wFace[][N_FACES], const int wSuit[][N_SUITS]) {
 	int player = -1;
 	short category[2] = {-1};
@@ -811,23 +991,14 @@ short checkWin (short *winningCategory, const int wFace[][N_FACES], const int wS
 	return player;
 }
 
-void swapCards (Card playersHand[][N_CARDS_ON_HAND], const char *wFace[], const char *wSuit[]) {
-	short i = 0, j = 0;
-
-	drawOutputBox (" ");
-	printf ("SELECT CARDS TO SWAP");
-
-	for (i = 0; i < N_CARDS_ON_HAND; i++) {
-		MoveCursor (34, 16 + i);
-		printf ("  [ ] %s of %s", wFace[playersHand[1][i].faceIndex], wSuit[playersHand[1][i].suitIndex]);
-	}
-
-	MoveCursor (34, 16 + i);
-	printf (" Use SPACEBAR to select/deselect");
-	MoveCursor (34, 16 + i + 1);
-	printf (" Press ENTER to continue");
-}
-
+/**
+ * Function name : selectSwapMenuItem ()
+ * Date Created  : 27 November 2012
+ * Definition    : This function allows user to select a card to swap using
+ *                 arrow keys and spacebar to select
+ * Pre-condition : n/a
+ * Post-condition: n/a
+ */
 short selectSwapMenuItem (Card playersHand[][N_CARDS_ON_HAND], int wDeck[][N_FACES], 
 	                     short *numDealtCard) {
 	Card hand;
@@ -896,6 +1067,13 @@ short selectSwapMenuItem (Card playersHand[][N_CARDS_ON_HAND], int wDeck[][N_FAC
 	return countSwap;
 }
 
+/**
+ * Function name : dealNextCard ()
+ * Date Created  : 27 November 2012
+ * Definition    : This function deals the next card available
+ * Pre-condition : n/a
+ * Post-condition: n/a
+ */
 Card dealNextCard (int wDeck[][N_FACES], short numDealtCard) {
 	Card hand = {0, 0, 0};
 	short row = 0, column = 0;
@@ -919,7 +1097,11 @@ Card dealNextCard (int wDeck[][N_FACES], short numDealtCard) {
 }
 
 /**
- * (b) (5 pts) Write a function to determine if the hand contains a pair.
+ * Function name : isOnePair ()
+ * Date Created  : 27 November 2012
+ * Definition    : This function determine if the hand contains a pair
+ * Pre-condition : n/a
+ * Post-condition: n/a
  */
 Boolean isOnePair (const int wFace[]) {
 	int i = 0, count = 0;
@@ -943,7 +1125,11 @@ Boolean isOnePair (const int wFace[]) {
 }
 
 /**
- * (c) (5 pts) Write a function to determine if the hand contains two pairs.
+ * Function name : isTwoPair ()
+ * Date Created  : 27 November 2012
+ * Definition    : This function determine if the hand contains two pairs
+ * Pre-condition : n/a
+ * Post-condition: n/a
  */
 Boolean isTwoPair (const int wFace[]) {
 	int i = 0, count = 0;
@@ -983,8 +1169,11 @@ Boolean isTwoPair (const int wFace[]) {
 }
 
 /**
- * (d) (5 pts) Write a function to determine if the hand contains three of a 
- *     kind (e.g. three jacks).
+ * Function name : isthreeOfAKind ()
+ * Date Created  : 27 November 2012
+ * Definition    : This function determine if the hand contains three of a kind
+ * Pre-condition : n/a
+ * Post-condition: n/a
  */
 Boolean isThreeOfAKind (const int wFace[]) {
 	int i = 0, count = 0;
@@ -1006,6 +1195,13 @@ Boolean isThreeOfAKind (const int wFace[]) {
 	return result;
 }
 
+/**
+ * Function name : isFullHouse ()
+ * Date Created  : 27 November 2012
+ * Definition    : This function determine if the hand contains a full house
+ * Pre-condition : n/a
+ * Post-condition: n/a
+ */
 Boolean isFullHouse (const int wFace[]) {
 	int i = 0, count = 0;
 	Boolean result = False;
@@ -1053,8 +1249,11 @@ Boolean isFullHouse (const int wFace[]) {
 }
 
 /**
- * (e) (5 pts) Write a function to determine if the hand contains four of a 
- *     kind (e.g. four aces).
+ * Function name : isFourOfAKind ()
+ * Date Created  : 27 November 2012
+ * Definition    : This function determine if the hand contains four of a kind
+ * Pre-condition : n/a
+ * Post-condition: n/a
  */
 Boolean isFourOfAKind (const int wFace[]) {
 	int i = 0, count = 0;
@@ -1077,8 +1276,11 @@ Boolean isFourOfAKind (const int wFace[]) {
 }
 
 /**
- * (f) (5 pts) Write a function to determine if the hand contains a flush 
- *     (i.e. all five cards of the same suit).
+ * Function name : isFlush ()
+ * Date Created  : 27 November 2012
+ * Definition    : This function determine if the hand contains a flush
+ * Pre-condition : n/a
+ * Post-condition: n/a
  */
 Boolean isFlush (const int wSuit[]) {
 	int i = 0;
@@ -1098,8 +1300,11 @@ Boolean isFlush (const int wSuit[]) {
 }
 
 /**
- * (g) (5 pts) Write a function to determine if the hand contains a straight 
- *     (i.e. five cards of consecutive face values).
+ * Function name : isStraight ()
+ * Date Created  : 27 November 2012
+ * Definition    : This function determine if the hand contains a straight
+ * Pre-condition : n/a
+ * Post-condition: n/a
  */
 Boolean isStraight (const int wFace[]) {
 	int i = 0, j = 0;
@@ -1144,6 +1349,13 @@ Boolean isStraight (const int wFace[]) {
 	return result;
 }
 
+/**
+ * Function name : isStraightFlush ()
+ * Date Created  : 27 November 2012
+ * Definition    : This function determine if the hand contains a straight flush
+ * Pre-condition : n/a
+ * Post-condition: n/a
+ */
 Boolean isStraightFlush (const int wFace[], const int wSuit[]) {
 	Boolean result = False;
 
@@ -1153,6 +1365,13 @@ Boolean isStraightFlush (const int wFace[], const int wSuit[]) {
 	return result;
 }
 
+/**
+ * Function name : isRoyalFlush ()
+ * Date Created  : 27 November 2012
+ * Definition    : This function determine if the hand contains a royal flush
+ * Pre-condition : n/a
+ * Post-condition: n/a
+ */
 Boolean isRoyalFlush (const int wFace[], const int wSuit[]) {
 	Boolean result = False;
 
