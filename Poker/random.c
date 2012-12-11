@@ -25,34 +25,43 @@ void Randomize (void) {
 
 /**
  * Function name : RandomInteger ()
- * Date Created  : 27 November 2012
+ * Date Created  : 12 December 2012
  * Definition    : This function returns a random number within the
  *                 the range specified
  * Pre-condition : n/a
  * Post-condition: n/a
  */
 int RandomInteger (int lowest, int highest) {
+	int wRandInt = 0;
+
 	if (lowest == 0)
-		return rand () % ++highest;
-	
-	if (lowest > 0)
-		return rand () % ++highest + lowest;
+		wRandInt = rand () % ++highest;
+	else 
+		wRandInt = rand () % highest + 1;
+
+	if (wRandInt < lowest) 
+		return RandomInteger (lowest, highest);
+
+	return wRandInt;
 }
 
 /**
  * Function name : RandomUnsignedInteger ()
- * Date Created  : 27 November 2012
+ * Date Created  : 12 December 2012
  * Definition    : This function returns a random number within the
  *                 the range specified
  * Pre-condition : n/a
  * Post-condition: n/a
  */
 unsigned int RandomUnsignedInteger (unsigned int lowest, unsigned int highest) {
-	if (lowest == 0)
-		return rand () % ++highest;
-	
-	if (lowest > 0)
-		return rand () % ++highest + lowest;
+	unsigned int wRandInt = 0;
+
+	wRandInt = rand () % highest + 1;
+
+	if (wRandInt < lowest) 
+		return RandomInteger (lowest, highest);
+
+	return wRandInt;
 }
 
 /**
